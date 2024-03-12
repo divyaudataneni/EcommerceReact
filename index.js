@@ -1,47 +1,46 @@
 import { Component } from "react";
-
+import { Link } from "react-router-dom";
 import './index.css'
-class ProductDetails extends Component{
 
-    state = {product :null}
 
-    componentDidMount(){
-        this.getproduct() ;
-    }
+class Home extends Component{
 
-    getproduct = async() =>{
-        const {match}= this.props
-        const {params}= match
-        const {id}= params
-        const response = await fetch(`https://fakestoreapi.com/products/${id}`)
-        const data = await response.json()
-        console.log(data)
-        this.setState({product:data})
-    }
+   state = {products : []}
+
+   componentDidMount()  {
+    this.getProductsList();
+   }
+   getProductsList = async () => {
     
+      const url = "https://fakestoreapi.com/products";
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log(data)
+      this.setState({ products: data });
+  }
+
     render(){
-       
-        if (!this.state.product) {
-            return <div>Loading...</div>;
-          }
-            
-        const {title, image, category, description, price} = this.state.product
+        const {products} = this.state
         return(
-            <div className="product-cont">
-                <img src={image} alt={title} className="product-image1"/>
-                <div className="description"> 
-                    <p>{category}</p>
-                    <h1>{title}</h1>
-                    <p>{description}</p>
-                    <div>
-                        <p>${price}</p>
-                       
-                    </div>
-                </div>
+            <div className="bg-cont">
+                <h1>Products Store </h1>
+                <ul>
+                {products.map(each => 
+                <Link to= {`/products/${each.id}`}>
+                <li key={each.id}>
+                            <img src={each.image} alt={each.title} className="product-image"/>
+                            <p>{each.title}</p>
+                            <p>${each.price}</p>
+
+                </li>
+                </Link>
+                    
+                    )}
+                </ul>
             </div>
+
         )
-    
     }
 }
 
-export default ProductDetails
+export default Home
