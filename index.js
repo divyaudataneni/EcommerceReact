@@ -1,22 +1,47 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
+import { Component } from "react";
 
+import './index.css'
+class ProductDetails extends Component{
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-    <App />
-    </BrowserRouter>
-  
-  </React.StrictMode>
-);
+    state = {product :null}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    componentDidMount(){
+        this.getproduct() ;
+    }
+
+    getproduct = async() =>{
+        const {match}= this.props
+        const {params}= match
+        const {id}= params
+        const response = await fetch(`https://fakestoreapi.com/products/${id}`)
+        const data = await response.json()
+        console.log(data)
+        this.setState({product:data})
+    }
+    
+    render(){
+       
+        if (!this.state.product) {
+            return <div>Loading...</div>;
+          }
+            
+        const {title, image, category, description, price} = this.state.product
+        return(
+            <div className="product-cont">
+                <img src={image} alt={title} className="product-image1"/>
+                <div className="description"> 
+                    <p>{category}</p>
+                    <h1>{title}</h1>
+                    <p>{description}</p>
+                    <div>
+                        <p>${price}</p>
+                       
+                    </div>
+                </div>
+            </div>
+        )
+    
+    }
+}
+
+export default ProductDetails
